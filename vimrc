@@ -11,8 +11,7 @@ set sw=2
 set splitbelow
 set splitright
 set hlsearch
-set background=dark
-set cursorline
+"set background=light
 syntax on
 set title
 "           +--Disable hlsearch while loading viminfo
@@ -173,3 +172,41 @@ augroup Perl_Setup
     autocmd BufNewFile *.p[lm] /^[ \t]*[#].*implementation[ \t]\+here/
 augroup END
 
+"=====[ Perltidy ]===========================================================
+Nmap ;p   [Perltidy the current buffer]   :w<CR>:! perltidy -pbp -b -nst %<CR>:e!<CR>
+Nmap ;pp  [Perltidy diff the current buffer] :call Perltidy_diff()<CR>
+
+function! Perltidy_diff ()
+    " Work out what the tidied file will be called...
+    let perl_file = expand( '%' )
+    let tidy_file = perl_file . '.tdy'
+
+    call system( 'perltidy -nst ' . perl_file . ' -o ' . tidy_file )
+
+    " Add the diff to the right of the current window...
+    set splitright
+    exe ":vertical diffsplit " . tidy_file
+
+    " Clean up the tidied version...
+    call delete(tidy_file)
+endfunction
+
+"=====[ cvsdiff ]===========================================================
+Nmap ;c  [cvsdiff the current buffer]  :w<CR>:!git diff<CR>
+Nmap ;cc [cvsdiff diff current buffer] :call CVS_diff()<CR>
+
+function! CVS_diff ()
+    " Work out what the tidied file will be called...
+    let module = readfile('CVS/Repository')
+    let file = expand( '%' )
+    let head_file = 'head.txt'
+
+    "    call system( 'perltidy -nst ' . perl_file . ' -o ' . tidy_file )
+
+    " Add the diff to the right of the current window...
+    set splitright
+    exe ":vertical diffsplit " . head_file
+
+    " Clean up the head version...
+    call delete(head_file)
+endfunction

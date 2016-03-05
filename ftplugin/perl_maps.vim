@@ -7,25 +7,6 @@ set iskeyword+=:
 
 set complete+=k~/.vim/extras/autocomplete.perl
 
-"=====[ Perltidy ]===========================================================
-Nmap ;p   [Perltidy the current buffer]   :w<CR>:! perltidy -pbp -b -nst %<CR>:e!<CR>
-Nmap ;pp  [Perltidy diff the current buffer] :call Perltidy_diff()<CR>
-
-function! Perltidy_diff ()
-    " Work out what the tidied file will be called...
-    let perl_file = expand( '%' )
-    let tidy_file = perl_file . '.tdy'
-
-    call system( 'perltidy -nst ' . perl_file . ' -o ' . tidy_file )
-
-    " Add the diff to the right of the current window...
-    set splitright
-    exe ":vertical diffsplit " . tidy_file
-
-    " Clean up the tidied version...
-    call delete(tidy_file)
-endfunction
-
 nmap gx yiw/^sub\s\+<C-R>"<CR>
 nmap <F2>   :! %<CR>
 nmap <F3>   :! perldoc %<CR>

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-skipthese=(./LICENSE ./Install.sh ./vimrc ./Makefile)
+protected=(./LICENSE ./Install.sh ./vimrc ./Makefile .netrwhist)
 
 if ! cmp -s $HOME/.vimrc vimrc ; then
   echo updating .vimrc
@@ -15,7 +15,7 @@ fi
 for file in $(find . -type f);
 do 
   toskip=0
-  for skip in ${skipthese[@]}; do
+  for skip in ${protected[@]}; do
     if [[ $file == ./.* ]] || [[ $file == $skip ]] ; then
       toskip=1
     fi  
@@ -38,7 +38,26 @@ do
   else
     echo install $file
     if [[ $1 == "commit" ]] ; then
-      echo -- $file $HOME/.vim/$file
+      rsync $file $HOME/.vim/$file
     fi
   fi
 done   
+
+for file in $(find $HOME/.vim -type f);
+do 
+  toskip=0
+  for skip in ${protected[@]}; do
+    if [[ $file == $HOME/.vim/.* ]] || [[ $file == $skip ]] ; then
+      toskip=1
+    fi  
+  done
+
+  if [ $toskip == 1 ]; then
+    continue
+  fi
+
+  filename=${file#"$HOME/.vim/"}
+  if [ ! -f ./$filename ] ; then
+    echo remove file $file
+  fi  
+done
