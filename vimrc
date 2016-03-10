@@ -210,3 +210,19 @@ function! CVS_diff ()
     " Clean up the head version...
     call delete(head_file)
 endfunction
+
+"====[ insert markers ]===================================================
+nmap mm :call Marker()<CR>
+
+function! Marker ()
+  let comment_char = exists('b:cmt') ? b:cmt : '#'
+  let currline = getline('.')
+
+  let marker = comment_char . '====[ ' . currline . ' ]' . repeat('=', 51-len(currline))
+
+  let indx = line('.')
+  call append(indx -1, marker)
+
+endfunction
+
+
