@@ -1,6 +1,6 @@
 #!/bin/sh
 
-protected=(./LICENSE ./Install.sh ./vimrc ./Makefile .netrwhist)
+protected=(./LICENSE ./Install.sh ./vimrc ./Makefile .netrwhist )
 
 if ! cmp -s $HOME/.vimrc vimrc ; then
   echo updating .vimrc
@@ -9,6 +9,7 @@ if ! cmp -s $HOME/.vimrc vimrc ; then
   fi
   if [[ $1 == "commit" ]] ; then
     echo -- $HOME/.vimrc vimrc
+    cp vimrc $HOME/.vimrc
   fi
 fi
 
@@ -47,7 +48,7 @@ for file in $(find $HOME/.vim -type f);
 do 
   toskip=0
   for skip in ${protected[@]}; do
-    if [[ $file == $HOME/.vim/.* ]] || [[ $file == $skip ]] ; then
+    if [[ $file == $HOME/.vim/.* ]] || [[ $file == $skip ]] || [[ $file == *proprietary.vim ]]; then
       toskip=1
     fi  
   done

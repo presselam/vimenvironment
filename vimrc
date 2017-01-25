@@ -33,6 +33,11 @@ filetype plugin on
 "=====[ Enable Nmap command for documented mappings ]================
 runtime plugin/documap.vim
 
+"====[ Work Specific Mappings ]=============================
+if filereadable("plugin/proprietary.vim")
+  runtime plugin/proprietary.vim
+endif
+
 "====[ Edit and auto-update this config file and plugins ]==========
 
 augroup VimReload
@@ -48,9 +53,15 @@ set t_Co=8
 set t_Sf=[3%p1%dm
 
 hi Search ctermfg=Black ctermbg=Yellow
+hi Comment ctermfg=white
 
 "=====[ Make * respect smartcase and also set @/ (to enable 'n' and 'N') ]======
 nmap *  :let @/ = '\<'.expand('<cword>').'\>' ==? @/ ? @/ : '\<'.expand('<cword>').'\>'<CR>:set hls<CR>
+
+noremap <ESC>[A <C-W>k
+noremap <ESC>[B <C-W>j
+noremap <ESC>[C <C-W>l
+noremap <ESC>[D <C-W>h
 
 noremap <Leader>s :%s/<C-R><C-w>//<CR>
 noremap <Leader>mt :!make test TEST_VERBOSE=1<CR>
@@ -224,5 +235,12 @@ function! Marker ()
   call append(indx -1, marker)
 
 endfunction
+
+"====[ block sort ]=========================================
+function! SortBlock () range
+  execute ":" . a:firstline . "," . a:lastline . " sort"
+endfunction
+
+vmap ;s :call SortBlock()<CR>
 
 
